@@ -4,11 +4,14 @@ from django.db import models
 
 
 class Teacher(models.Model):
-    name = models.ManyToManyField(to='teacher', blank=True, null=True)
+    first_name = models.CharField(max_length=50, blank=True, null=True)
+    last_name = models.CharField(max_length=50, blank=True, null=True)
 
 
 class Student(models.Model):
-    name = models.ManyToManyField(to='student', blank=True, null=True)
+    first_name = models.CharField(max_length=50, blank=True, null=True)
+    last_name = models.CharField(max_length=50, blank=True, null=True)
+    teacher = models.ManyToManyField(Teacher)
 
 
 class TeacherStudent(models.Model):

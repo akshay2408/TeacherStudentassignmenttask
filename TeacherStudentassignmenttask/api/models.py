@@ -16,5 +16,5 @@ class Student(models.Model):
 
 class TeacherStudent(models.Model):
     teacher = models.ForeignKey(to='teacher',on_delete=models.CASCADE, blank=True, null=True)
-    Student = models.ForeignKey(to='student', on_delete=models.CASCADE, blank=True, null=True)
+    student = models.ForeignKey(to='student', on_delete=models.CASCADE, blank=True, null=True)
     is_star = models.BooleanField(default=False, blank=True, null=True)

@@ -26,7 +26,6 @@
               <th scope="col">Sr.no.</th>
               <th scope="col">First Name</th>
               <th scope="col">Last Name</th>
-              <th scope="col">Teacher Name</th>
               <th scope="col">Edit</th>
               <th scope="col">Delete</th>
           </tr>
@@ -40,7 +39,6 @@
               <th scope="row">{{forloop.counter}}</th>
               <td>{{student.first_name}}</td>
               <td>{{student.last_name}}</td>
-              <td>{{student.teacher}}</td>
               <td><a href="{% url 'update_student' student.id %}" style = "color:yellow;font-size:20px;" >Click</a></td>
               <td><a href="{% url 'delete_student' student.id %}" style = "color:orange;font-size:20px;">Delete</a></td>
               

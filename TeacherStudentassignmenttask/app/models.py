@@ -8,7 +8,7 @@ class Teacher(models.Model):
     last_name = models.CharField(max_length=50)
 
     def __str__(self):
-        return f"{self.first_name}"
+        return self.first_name + " " + self.last_name
     
 
 class Student(models.Model):
@@ -16,7 +16,7 @@ class Student(models.Model):
     last_name = models.CharField(max_length=50)
 
     def __str__(self):
-        return f"{self.first_name}"
+        return self.first_name + " " + self.last_name
 
 
 class TeacherStudent(models.Model):

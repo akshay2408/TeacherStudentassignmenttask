@@ -87,3 +87,40 @@ class DeleteStudent(DeleteView):
         student = get_object_or_404(Student, id=pk)
 
 
+class AssignTeacher(CreateView):
+    model = TeacherStudent
+    template_name = "app/assign_teacher.html"
+    fields = ['teacher', 'student', 'is_star']
+    success_url = reverse_lazy("assign_teacher")
+
+    def form_valid(self, form):
+        return super(AssignTeacher, self).form_valid(form)
+
+
+class AssignedTeacherStudentList(ListView):
+    model = TeacherStudent
+    template_name = "app/assigned_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class UpdateAssignedTeacherStudent(UpdateView):
+    model = TeacherStudent
+    template_name = "app/update_assigned_list.html"
+    fields = ['teacher', 'student', 'is_star']
+    success_url = reverse_lazy("assigned_list")
+
+    def update_assigned_list(request, pk):
+        assigned_list = get_object_or_404(TeacherStudent, id=pk)
+
+
+class DeleteAssignedTeacherStudent(DeleteView):
+    model = TeacherStudent
+    template_name = "app/delete_assigned_list.html"
+    success_url = reverse_lazy("assigned_list")
+
+    def delete_assigned_list(request, pk):
+        student = get_object_or_404(TeacherStudent, id=pk)
+    

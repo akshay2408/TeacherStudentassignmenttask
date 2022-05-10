@@ -1,0 +1,32 @@
+{% extends 'app/base.html' %}  
+{% block content %}
+{% load crispy_forms_tags %}
+
+<style>
+  .container{
+    margin-top:30px;
+  }
+</style>
+
+<section class='text-left container'>
+  <button href="" class="btn btn-primary" type="submit">
+    <a href="{% url 'home' %}" style="color:white;" > Home</a>
+  </button>
+</section>
+
+<div class="container">
+  <form method="POST">
+          {% csrf_token %}
+            <div class="container">
+             <fieldset class="form-group">
+              <legend class="border-bottom mb-4">Update Student Detail</legend>
+          </fieldset>
+             {{form|crispy}}
+          <div class="form-group">
+              <button href="" class="btn btn-outline-info" type="submit">
+                  Save
+              </button>
+          </form>
+  </div>
+  <a href="{% url 'home' %}" class="btn btn-primary">Go to Home</a>
+{% endblock content %}

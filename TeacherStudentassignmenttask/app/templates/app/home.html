@@ -1,0 +1,30 @@
+{% extends 'app/base.html' %}  
+{% block content %}
+<style>
+    .card{
+      margin-top: 200px;
+      margin-left: 150px;
+}
+</style>
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 align="center" class="card-title">Teacher Section</h5>
+          <p class="card-text">For Adding teacher and for seeing list of teacher click below.</p>
+          <a href="{% url 'teacher' %}" class="btn btn-primary">Click Here</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 align="center" class="card-title">Student Section</h5>
+          <p class="card-text">For Adding student and for seeing list of student click below.</p>
+          <a href="{% url 'student' %}" class="btn btn-primary">Click Here</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% endblock content %}

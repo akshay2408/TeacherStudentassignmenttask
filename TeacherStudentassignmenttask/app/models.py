@@ -9,7 +9,7 @@ class Teacher(models.Model):
 
     def __str__(self):
         return self.first_name + " " + self.last_name
-    
+
 
 class Student(models.Model):
     first_name = models.CharField(max_length=50)
@@ -20,9 +20,9 @@ class Student(models.Model):
 
 
 class TeacherStudent(models.Model):
-    teacher = models.ForeignKey(to='teacher',on_delete=models.CASCADE)
-    student = models.ForeignKey(to='student', on_delete=models.CASCADE)
+    teacher = models.ForeignKey(to="teacher", on_delete=models.CASCADE, related_name="teacher1")
+    student = models.ForeignKey(to="student", on_delete=models.CASCADE, related_name="student1")
     is_star = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.teacher}"
+        return f"{self.teacher} : {self.student}"

@@ -1,14 +1,20 @@
-from django.shortcuts import render
+from multiprocessing import context
+from urllib import request
+from django import forms
+from .forms import StudentForm
+from django.shortcuts import render,reverse,get_object_or_404
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView
 from .models import Teacher, Student, TeacherStudent
 from django.urls import reverse_lazy
+# from django.forms import ModelForm
 from django.views.generic.edit import DeleteView
-
+from django.db.models import Q
+from django.forms import modelform_factory
 
 def home(request):
-    return render(request, 'app/home.html')
+    return render(request, "app/home.html")
 
 
 class AddTeacher(CreateView):
@@ -87,15 +93,29 @@ class DeleteStudent(DeleteView):
         student = get_object_or_404(Student, id=pk)
 
 
-class AssignTeacher(CreateView):
-    model = TeacherStudent
-    template_name = "app/assign_teacher.html"
-    fields = ['teacher', 'student', 'is_star']
-    success_url = reverse_lazy("assign_teacher")
+# class AssignTeacher(CreateView):
+#     model = TeacherStudent
+#     template_name = "app/assign_teacher.html"
+#     form_class = StudentAddForm
+#     success_url = reverse_lazy("assign_teacher")
+    
+#     # def get_form_kwargs(self):
+#     #     print(self.kwargs)
+#     #     self.student = Student.objects.all()
+#     #     kwargs = super().get_form_kwargs()
+#     #     kwargs['student'] = self.student
+#     #     return kwargs
+    
+#     def form_valid(self, form):
+#         form.instance.student = self.student
+#         return super(AssignTeacher, self).form_valid(form)
 
-    def form_valid(self, form):
-        return super(AssignTeacher, self).form_valid(form)
-
+#     def get_context_data(self, **kwargs):
+#         self.id = self.request.GET.get('id')
+#         context = super(AssignTeacher, self).get_context_data(**kwargs)
+#         context['teacher_obj'] = Teacher.objects.get(id=self.id)
+#         return context
+    
 
 class AssignedTeacherStudentList(ListView):
     model = TeacherStudent
@@ -109,7 +129,7 @@ class AssignedTeacherStudentList(ListView):
 class UpdateAssignedTeacherStudent(UpdateView):
     model = TeacherStudent
     template_name = "app/update_assigned_list.html"
-    fields = ['teacher', 'student', 'is_star']
+    fields = ["teacher", "student", "is_star"]
     success_url = reverse_lazy("assigned_list")
 
     def update_assigned_list(request, pk):
@@ -123,4 +143,55 @@ class DeleteAssignedTeacherStudent(DeleteView):
 
     def delete_assigned_list(request, pk):
         student = get_object_or_404(TeacherStudent, id=pk)
+        
+
+def SelectStudent(request,pk):
+    teacher=Teacher.objects.get(pk=pk)
+    student_obj = TeacherStudent.objects.filter(Q(teacher_id=pk))
+    context={'teacher':teacher,'student':student_obj}
+    return render(request,"app/select_student.html",context)
     
+def unsignedStudent(request,pk):
+    teacher=Teacher.objects.get(pk=pk)
+    ids = teacher.teacher1.values_list('student_id', flat=True)
+    students = Student.objects.filter(~Q(id__in = ids))
+    context={'teacher':teacher,'students':students}
+    return render(request,"app/select_unsigned_student.html",context)
+
+
+# def studentform(request):
+    
+#     studentformset=modelform_factory(TeacherStudent,fields='__all__')
+#     formset = studentformset()
+#     context={
+#         'formset':formset
+#     }
+#     return render(request,'app/studentform.html',context)
+    
+# def addstudent(request,pk):
+#     return render(request,'app/studentform.html')
+
+# def studentselect(request):
+    
+#     context ={}
+#     form = StudentForm()
+#     context['form']= form
+#     if request.GET:
+#         temp = request.GET['student_field']
+#         print(temp)
+#     return render( request, "app/studentform.html", context)
+
+# def selectstudent(request,pk):
+#     teacher=Teacher.objects.get(pk=pk)
+#     ids = teacher.teacher1.values_list('student_id', flat=True)
+#     students = Student.objects.filter(~Q(id__in = ids))
+#     context={'teacher':teacher,'students':students,}
+#     Student = Student.objects.get(id=pk)
+#     print(Student)
+    # import pdb;pdb.set_trace()
+    # wish_list, created = Wishlist.objects.get_or_create(
+    #     product=product, user=request.user
+    # )
+
+    # messages.info(request, "The item was added to your wishlist")
+    # return redirect("shop:index")

@@ -1,37 +1,33 @@
-{% extends 'app/base.html' %}  
-{% block content %}
-{% load crispy_forms_tags %}
+{% extends 'app/base.html' %} {% block content %} {% load crispy_forms_tags %}
 <style>
-  .container{
-    margin-top:20px;
+  .container {
+    margin-top: 20px;
   }
 </style>
 
-<section class='text-left container'>
-<button href="" class="btn btn-primary" type="submit">
-  <a href="{% url 'home' %}" style="color:white;" > Home</a>
-</button>
+<section class="text-left container">
+  <button href="" class="btn btn-primary" type="submit">
+    <a href="{% url 'home' %}" style="color: white"> Home</a>
+  </button>
 </section>
 
 <div class="container">
-    <form method="POST">
-        {% csrf_token %}
-         <br><br>
-            <legend align="center" class="text"> Add teachers Here </legend>
-            <br><br>
-        {{form|crispy}}
-        <div class="form-group">
-            <button href="" class="btn btn-outline-info" type="submit">
-                Add
-            </button>
-        </div>
-    </form>
-    <br><br><br>
-    <button href="" class="btn btn-primary" type="submit">
-      <a href="{% url 'teacher_list' %}" style="color:white;" > Click Here To See Teacher List </a>
-   </button>
-    
-   
+  <form method="POST">
+    {% csrf_token %}
+    <br /><br />
+    <legend align="center" class="text">Add teachers Here</legend>
+    <br /><br />
+    {{form|crispy}}
+    <div class="form-group">
+      <button href="" class="btn btn-outline-info" type="submit">Add</button>
+    </div>
+  </form>
+  <br /><br /><br />
+  <button href="" class="btn btn-primary" type="submit">
+    <a href="{% url 'teacher_list' %}" style="color: white">
+      Click Here To See Teacher List
+    </a>
+  </button>
 </div>
 
 {% endblock content %}

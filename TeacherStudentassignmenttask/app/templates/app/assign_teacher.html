@@ -1,37 +1,36 @@
-{% extends 'app/base.html' %}  
-{% block content %}
-{% load crispy_forms_tags %}
+{% extends 'app/base.html' %} {% block content %} {% load crispy_forms_tags %}
 <style>
-  .container{
-    margin-top:20px;
+  .container {
+    margin-top: 20px;
   }
 </style>
 
-<section class='text-left container'>
-<button href="" class="btn btn-primary" type="submit">
-  <a href="{% url 'home' %}" style="color:white;" > Home</a>
-</button>
+<section class="text-left container">
+  <button href="" class="btn btn-primary" type="submit">
+    <a href="{% url 'home' %}" style="color: white"> Home</a>
+  </button>
 </section>
 
 <div class="container">
-    <form method="POST">
-        {% csrf_token %}
-         <br><br>
-            <legend align="center" class="text"> Assign Teacher to Student</legend>
-            <br><br>
-        {{form|crispy}}
-        <div class="form-group">
-            <button href="" class="btn btn-outline-info" type="submit">
-                Add
-            </button>
-        </div>
-    </form>
-    <br><br><br>
-    <button href="" class="btn btn-primary" type="submit">
-      <a href="{% url 'assigned_list' %}" style="color:white;" > Click Here To See Assigned Teacher and Student List </a>
-   </button>
+  <form method="POST">
+    {{form.instance.teacher}}
+    {% csrf_token %}
+    <br /><br />
+    <legend align="center" class="text">Assign Student to Teacher</legend>
+    <br /><br />
+    <h4>Teacher Name:- {{teacher_obj}}</h4></br>
+    {{form|crispy}}
     
-   
+    <div class="form-group">
+      <button href="" class="btn btn-outline-info" type="submit">Add</button>
+    </div>
+  </form>
+  <br /><br /><br />
+  <button href="" class="btn btn-primary" type="submit">
+    <a href="{% url 'assigned_list' %}" style="color: white">
+      Click Here To See Assigned Teacher and Student List
+    </a>
+  </button>
 </div>
 
 {% endblock content %}

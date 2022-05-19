@@ -7,43 +7,51 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0001_initial'),
+        ("app", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='student',
-            name='first_name',
+            model_name="student",
+            name="first_name",
             field=models.CharField(default=False, max_length=50),
         ),
         migrations.AlterField(
-            model_name='student',
-            name='last_name',
+            model_name="student",
+            name="last_name",
             field=models.CharField(default=False, max_length=50),
         ),
         migrations.AlterField(
-            model_name='teacher',
-            name='first_name',
+            model_name="teacher",
+            name="first_name",
             field=models.CharField(default=False, max_length=50),
         ),
         migrations.AlterField(
-            model_name='teacher',
-            name='last_name',
+            model_name="teacher",
+            name="last_name",
             field=models.CharField(default=False, max_length=50),
         ),
         migrations.AlterField(
-            model_name='teacherstudent',
-            name='is_star',
+            model_name="teacherstudent",
+            name="is_star",
             field=models.BooleanField(default=False),
         ),
         migrations.AlterField(
-            model_name='teacherstudent',
-            name='student',
-            field=models.ForeignKey(default=False, on_delete=django.db.models.deletion.CASCADE, to='app.student'),
+            model_name="teacherstudent",
+            name="student",
+            field=models.ForeignKey(
+                default=False,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="app.student",
+            ),
         ),
         migrations.AlterField(
-            model_name='teacherstudent',
-            name='teacher',
-            field=models.ForeignKey(default=False, on_delete=django.db.models.deletion.CASCADE, to='app.teacher'),
+            model_name="teacherstudent",
+            name="teacher",
+            field=models.ForeignKey(
+                default=False,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="app.teacher",
+            ),
         ),
     ]

@@ -16,35 +16,37 @@
     <a href="{% url 'home' %}" style="color:white;" > Home</a>
   </button>
 </section>
+<h3>{{teacher}}</h3>
+
 
 <div class="container">
-  {% if object_list %}
+  
+  
   <table class="table table-striped table-bordered table-hover table-dark">
       <thead>          
           <tr>
               <th scope="col">Sr.no.</th>
               <th scope="col">First Name</th>
               <th scope="col">Last Name</th>
-              <th scope="col">Edit</th>
-              <th scope="col">Delete</th>
+              <th scope="col">Add to list</th>
+              
+   
           </tr>
       </thead>   
-      {% for student in object_list %}
-      <tbody>         
-          <tr> 
+      <tbody> 
+          
+      {% for s in students %}
+          <tr>       
+              {% comment %} <td>{{ s.student.id}}</td>    {% endcomment %}
               <th scope="row">{{forloop.counter}}</th>
-              <td>{{student.first_name}}</td>
-              <td>{{student.last_name}}</td>
-              <td><a href="{% url 'update_student' student.id %}" style = "color:yellow;font-size:20px;" >Click</a></td>
-              <td><a href="{% url 'delete_student' student.id %}" style = "color:orange;font-size:20px;">Delete</a></td>          
-          </tr>
-          {% endfor %}
-          {% else %}
-            <br><br>
-              <h1 align='center'> Student Not Found <h1>  
-          {% endif %}  
+              <td>{{ s.first_name}}</td>   
+              <td>{{ s.last_name}}</td>  
+              <td><a href="{% url 'selectstudent's.id%}" style = "color:yellow;font-size:20px;" >Add</a></td>
+            
+        {% endfor %}
 
       </tbody>
   </table>
+  
 </div>
 {% endblock content %}

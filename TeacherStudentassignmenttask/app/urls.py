@@ -39,9 +39,10 @@ urlpatterns = [
         views.DeleteAssignedTeacherStudent.as_view(),
         name="delete_assigned_list",
     ),
-    path("SelectStudent/<int:pk>",views.SelectStudent,name="SelectStudent"),
+    path("selected_student/<int:pk>",views.selected_student,name="selected_student"),
     
-    path("unsignedStudent/<int:pk>",views.unsignedStudent,name="unsignedStudent"),
-
+    path("unsigned_student/<int:pk>",views.unsigned_student,name="unsigned_student"),
     
+    path('add-student/<int:teacher>/<int:student>/', views.add_student, name="add_student"),
+    path('mark-as-star/<int:teacher>/<int:student>/', views.mark_as_star, name="mark_as_star"),
 ]

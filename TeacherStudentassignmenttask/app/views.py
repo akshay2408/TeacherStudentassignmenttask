@@ -1,8 +1,7 @@
 from multiprocessing import context
-from urllib import request
 from django import forms
 from .forms import StudentForm
-from django.shortcuts import render,reverse,get_object_or_404
+from django.shortcuts import render, reverse, get_object_or_404, redirect
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView
@@ -12,6 +11,8 @@ from django.urls import reverse_lazy
 from django.views.generic.edit import DeleteView
 from django.db.models import Q
 from django.forms import modelform_factory
+from django.contrib import messages
+
 
 def home(request):
     return render(request, "app/home.html")
@@ -145,13 +146,14 @@ class DeleteAssignedTeacherStudent(DeleteView):
         student = get_object_or_404(TeacherStudent, id=pk)
         
 
-def SelectStudent(request,pk):
+def selected_student(request,pk):
     teacher=Teacher.objects.get(pk=pk)
     student_obj = TeacherStudent.objects.filter(Q(teacher_id=pk))
     context={'teacher':teacher,'student':student_obj}
     return render(request,"app/select_student.html",context)
-    
-def unsignedStudent(request,pk):
+
+
+def unsigned_student(request,pk):
     teacher=Teacher.objects.get(pk=pk)
     ids = teacher.teacher1.values_list('student_id', flat=True)
     students = Student.objects.filter(~Q(id__in = ids))
@@ -195,3 +197,37 @@ def unsignedStudent(request,pk):
 
     # messages.info(request, "The item was added to your wishlist")
     # return redirect("shop:index")
+
+def add_student(request, teacher, student):
+    try:
+        student = Student.objects.get(id=student)
+        teacher = Teacher.objects.get(id=teacher)
+        TeacherStudent.objects.get_or_create(
+            teacher=teacher,
+            student=student
+        )
+        messages.add_message(
+            request,
+            messages.SUCCESS,
+            f'Student {student.first_name} {student.last_name} has been added in your student list.')
+    except:
+        messages.add_message(request, messages.ERROR, 'Something went wrong.')
+    return redirect('unsigned_student', teacher.id)
+
+
+def mark_as_star(request, teacher, student):
+    try:
+        student = Student.objects.get(id=student)
+        relation_object = TeacherStudent.objects.filter(
+            teacher=teacher,
+            student=student
+        )
+        is_star = False if relation_object[0].is_star else True
+        relation_object.update(is_star=is_star)
+        messages.add_message(
+            request,
+            messages.SUCCESS,
+            f'Student {student.first_name} {student.last_name} updated')
+    except:
+        messages.add_message(request, messages.ERROR, 'Something went wrong.')
+    return redirect('selected_student', teacher)

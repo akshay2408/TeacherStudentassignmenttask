@@ -15,8 +15,22 @@
   <button href="" class="btn btn-primary" type="submit">
     <a href="{% url 'home' %}" style="color:white;" > Home</a>
   </button>
+  <button
+    class="btn btn-dark"
+    style="float:right"
+    onclick="location.href='{% url 'teacher_list' %}'"
+  >Go Back to Teacher List</button>
 </section>
-<h3>{{teacher}}</h3>
+<h3 style='text-align:center'>{{teacher}}</h3>
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <div {% if message.tags == "success" %} class="alert alert-success" {% else %} class="alert alert-danger" {% endif %} role="alert">
+      {{message}}
+    </div>
+    {% endfor %}
+</ul>
+{% endif %}
 
 
 <div class="container">
@@ -28,16 +42,23 @@
               <th scope="col">Sr.no.</th>
               <th scope="col">First Name</th>
               <th scope="col">Last Name</th>
+              <th scope="col">Mark as star</th>
           </tr>
       </thead>   
       <tbody> 
           
       {% for s in student %}
           <tr>       
-              {% comment %} <td>{{ s.student.id}}</td>    {% endcomment %}
               <th scope="row">{{forloop.counter}}</th>
               <td>{{ s.student.first_name}}</td>   
-              <td>{{ s.student.last_name}}</td>   
+              <td>{{ s.student.last_name}}</td>
+              <td><a
+                  title='{% if s.is_star %} Starred {% else %} Unstarred {% endif %}'
+                  style="color: {% if s.is_star %} yellow {% else %} white {% endif %}"
+                  href={% url 'mark_as_star' teacher=teacher.id student=s.student.id %}>
+                  <i class="fa fa-star"></i>
+                </a>
+              </td>
           </tr>
         {% endfor %}
           

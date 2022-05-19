@@ -11,16 +11,29 @@
 </style>
 <legend align="center" class="text"><b> List Of Student </b></legend>
 
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <div {% if message.tags == "success" %} class="alert alert-success" {% else %} class="alert alert-danger" {% endif %} role="alert">
+      {{message}}
+    </div>
+    {% endfor %}
+</ul>
+{% endif %}
+
 <section class='text-left container'>
   <button href="" class="btn btn-primary" type="submit">
     <a href="{% url 'home' %}" style="color:white;" > Home</a>
   </button>
+  <button
+    class="btn btn-dark"
+    style="float:right"
+    onclick="location.href='{% url 'teacher_list' %}'"
+  >Go Back to Teacher List</button>
 </section>
-<h3>{{teacher}}</h3>
-
+<h3 style="text-align: center;">{{teacher}}</h3>
 
 <div class="container">
-  
   
   <table class="table table-striped table-bordered table-hover table-dark">
       <thead>          
@@ -29,20 +42,20 @@
               <th scope="col">First Name</th>
               <th scope="col">Last Name</th>
               <th scope="col">Add to list</th>
-              
-   
           </tr>
       </thead>   
       <tbody> 
           
-      {% for s in students %}
-          <tr>       
+      {% for student in students %}
+          <tr>
               {% comment %} <td>{{ s.student.id}}</td>    {% endcomment %}
               <th scope="row">{{forloop.counter}}</th>
-              <td>{{ s.first_name}}</td>   
-              <td>{{ s.last_name}}</td>  
-              <td><a href="{% url 'selectstudent's.id%}" style = "color:yellow;font-size:20px;" >Add</a></td>
-            
+              <td>{{ student.first_name}}</td>
+              <td>{{ student.last_name}}</td>
+              <td><a
+                href="{% url 'add_student' teacher=teacher.id student=student.id  %}"
+                style = "color:yellow;font-size:20px;"
+              >Add</a></td>
         {% endfor %}
 
       </tbody>

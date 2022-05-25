@@ -55,7 +55,9 @@
               <td><a
                   title='{% if s.is_star %} Starred {% else %} Unstarred {% endif %}'
                   style="color: {% if s.is_star %} yellow {% else %} white {% endif %}"
-                  href={% url 'mark_as_star' teacher=teacher.id student=s.student.id %}>
+                  href=
+                    {% if teacher %} {% url 'mark_as_star' teacher=teacher.id student=s.student.id %}
+                    {% else %}#{% endif%}>
                   <i class="fa fa-star"></i>
                 </a>
               </td>

@@ -147,9 +147,11 @@ class DeleteAssignedTeacherStudent(DeleteView):
         
 
 def selected_student(request,pk):
-    teacher=Teacher.objects.get(pk=pk)
-    student_obj = TeacherStudent.objects.filter(Q(teacher_id=pk))
-    context={'teacher':teacher,'student':student_obj}
+    student_obj = TeacherStudent.objects.filter(
+        teacher=pk
+    ).select_related('teacher', 'student')
+    teacher = getattr(student_obj.first(), 'teacher', None)
+    context={'teacher':teacher, 'student':student_obj}
     return render(request,"app/select_student.html",context)
 
 

@@ -20,8 +20,8 @@ class Student(models.Model):
 
 
 class TeacherStudent(models.Model):
-    teacher = models.ForeignKey(to="teacher", on_delete=models.CASCADE, related_name="teacher1")
-    student = models.ForeignKey(to="student", on_delete=models.CASCADE, related_name="student1")
+    teacher = models.ForeignKey(to="teacher", on_delete=models.CASCADE, related_name="teacher")
+    student = models.ForeignKey(to="student", on_delete=models.CASCADE, related_name="student")
     is_star = models.BooleanField(default=False)
 
     def __str__(self):

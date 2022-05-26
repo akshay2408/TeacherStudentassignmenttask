@@ -41,7 +41,7 @@
             <td><a href="{% url 'update_teacher' teacher.id %}" style = "color:yellow;font-size:20px;" >Click</a></td>
             <td><a href="{% url 'delete_teacher' teacher.id %}" style = "color:orange;font-size:20px;">Delete</a></td>
             <td><a href="{% url 'selected_student' teacher.id %}" style = "color:orange;font-size:20px;">Click</a></td>
-            <td><a href="{% url 'unsigned_student' teacher.id %}" style = "color:orange;font-size:20px;">Click</a></td>
+            <td><a href="{% url 'unassigned_students' teacher.id %}" style = "color:orange;font-size:20px;">Click</a></td>
             {% comment %} <td><a href="{% url 'assign_teacher' %}?id={{teacher.id}}" style = "color:orange;font-size:20px;">Click</a></td> {% endcomment %}
           </tr>
           {% endfor %}

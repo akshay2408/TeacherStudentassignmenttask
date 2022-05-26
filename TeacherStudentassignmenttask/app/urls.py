@@ -1,12 +1,11 @@
 from django.urls import path
 from . import views
-
+from django.views.decorators.csrf import csrf_exempt
+from graphene_django.views import GraphQLView
+from .schema import schema
 
 urlpatterns = [
     path("", views.home, name="home"),
-    # path("selectstudent",views.selectstudent,name="selectstudent"),
-    # path("studentteacherform",views.StudentTeacherForm.as_view(),name="Student_Teacher"),
-    
     path("teacher", views.AddTeacher.as_view(), name="teacher"),
     path("teacher_list", views.TeacherList.as_view(), name="teacher_list"),
     path(
@@ -23,7 +22,7 @@ urlpatterns = [
     path(
         "delete_student/<int:pk>", views.DeleteStudent.as_view(), name="delete_student"
     ),
-   # path("assign_teacher/", views.AssignTeacher.as_view(), name="assign_teacher"),
+    # path("assign_teacher/", views.AssignTeacher.as_view(), name="assign_teacher"),
     path(
         "assigned_list",
         views.AssignedTeacherStudentList.as_view(),
@@ -39,10 +38,26 @@ urlpatterns = [
         views.DeleteAssignedTeacherStudent.as_view(),
         name="delete_assigned_list",
     ),
-    path("selected_student/<int:pk>",views.selected_student,name="selected_student"),
-    
-    path("unsigned_student/<int:pk>",views.unsigned_student,name="unsigned_student"),
-    
-    path('add-student/<int:teacher>/<int:student>/', views.add_student, name="add_student"),
-    path('mark-as-star/<int:teacher>/<int:student>/', views.mark_as_star, name="mark_as_star"),
-]
+    path("selected_student/<int:pk>", views.assigned_students, name="selected_student"),
+    path(
+        "unassigned_students/<int:pk>",
+        views.unassigned_students,
+        name="unassigned_students",
+    ),
+    path(
+        "add-student/<int:teacher>/<int:student>/",
+        views.add_student,
+        name="add_student",
+    ),
+    path(
+        "remove_student/<int:teacher>/<int:student>/",
+        views.remove_student,
+        name="remove_student",
+    ),
+    path(
+        "mark-as-star/<int:teacher>/<int:student>/",
+        views.mark_as_star,
+        name="mark_as_star",
+    ),
+    path("graphql", csrf_exempt(GraphQLView.as_view(graphiql=True, schema=schema))),   
+   ]

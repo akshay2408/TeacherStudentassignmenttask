@@ -143,42 +143,33 @@ def add_student(request, teacher, student):
         messages.add_message(
             request,
             messages.SUCCESS,
-            f"Student {student.first_name} {student.last_name} has been added in your student list.",
+            f"Student has been added in your student list.",
         )
     except:
-        messages.add_message(request, messages.ERROR, "Something went wrong.")
+        messages.add_message(request, messages.ERROR,"something went wrong")
     return redirect("unassigned_students", teacher.id)
 
 
 def remove_student(request, teacher, student):
-    try:
-        student = Student.objects.get(id=student)
-        teacher = Teacher.objects.get(id=teacher)
-        record = TeacherStudent.objects.get(teacher=teacher, student=student)
-        record.delete()
-        messages.add_message(
-            request,
-            messages.SUCCESS,
-            f"Student {student.first_name} {student.last_name} has been removed in your student list.",
-        )
-    except:
-        messages.add_message(request, messages.ERROR, "Something went wrong.")
-    return redirect("selected_student", teacher.id)
+    record = TeacherStudent.objects.get(teacher=teacher, student=student)
+    record.delete()
+    messages.add_message(
+        request,
+        messages.SUCCESS,
+        f"Student removed in your student list.",
+    )
+    return redirect("selected_student", teacher)
 
 
 def mark_as_star(request, teacher, student):
-    try:
-        student = Student.objects.get(id=student)
-        relation_object = TeacherStudent.objects.filter(
-            teacher=teacher, student=student
-        )
-        is_star = False if relation_object[0].is_star else True
-        relation_object.update(is_star=is_star)
-        messages.add_message(
-            request,
-            messages.SUCCESS,
-            f"Student {student.first_name} {student.last_name} updated",
-        )
-    except:
-        messages.add_message(request, messages.ERROR, "Something went wrong.")
+    relation_object = TeacherStudent.objects.filter(
+        teacher=teacher, student=student
+    )
+    is_star = False if relation_object[0].is_star else True
+    relation_object.update(is_star=is_star)
+    messages.add_message(
+        request,
+        messages.SUCCESS,
+        f"Student updated",
+    )
     return redirect("selected_student", teacher)

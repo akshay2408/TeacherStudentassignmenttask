@@ -1,3 +1,4 @@
+import traceback
 from django.urls import reverse
 from django.test import TestCase
 from .models import Teacher, Student, TeacherStudent
@@ -5,163 +6,201 @@ from .models import Teacher, Student, TeacherStudent
 
 class ViewsTestCase(TestCase):
     def setUp(self):
-        self.student = Student.objects.create(
-            first_name="sam",
-            last_name="billings",
-        )
+        self.first_name = "shan"
+        self.last_name = "rai"
+
+        self.tc_obj = {
+             "first_name": "shan",
+            "last_name": "rai"
+        }
         self.teacher = Teacher.objects.create(
-            first_name="tom",
-            last_name="hardy",
-        )
-        # self.student_techer = TeacherStudent.objects.create(
-        #     student=self.student, teacher=self.teacher
-        # )
+            first_name=self.first_name,
+            last_name=self.last_name
+            )
+        self.student = Student.objects.create(
+            first_name=self.first_name,
+            last_name=self.last_name
+            )
+
+    def add_student_url(self,teacher_id, student_id):
+        return reverse(
+            "add_student",
+            kwargs={"teacher": teacher_id,
+                    "student":student_id
+            })
 
     def test_valid_url(self):
         resp = self.client.get(reverse("home"))
         self.assertEqual(resp.status_code, 200)
 
-    def test_valid_student_add_url(self):
-        resp = self.client.get(reverse("student"))
+    def test_valid_teacher_list_url(self):
+        resp = self.client.get(reverse("teacher_list"))
         self.assertEqual(resp.status_code, 200)
 
-    def test_valid_payload_student(self):
-        data = self.student
-        field_label = data.last_name
-        self.assertEqual(field_label, "billings")
-
-    def test_invalid_payload_student(self):
-        data = self.student
-        field_label = data.last_name
-        self.assertHTMLNotEqual(field_label, "sam")
-
-    def test_missing_payload_student(self):
-        data = self.student
-        field_label = data.last_name
-        self.assertHTMLNotEqual(field_label, "")
-
-    def test_update_payload_student(self):
-        data = self.student
-        data.first_name="shanu"
-        data.save()
-        field_label = data.first_name
-        self.assertEqual(field_label, "shanu")
-    
-    def test_delete_payload_student(self):
-        data = self.student
-        id  = data.id
-        data.delete()
-        try:
-            Student.objects.get(id=id)
-            self.assertEqual(False, False)
-        except:
-            self.assertEqual(True, True)
-
-    def test_valid_payload_teacher(self):
-        data = self.teacher
-        teacher = Teacher.objects.get(id=data.id)
-        field_label = teacher.last_name
-        self.assertEqual(field_label, "hardy")
-
-    def test_invalid_payload_teacher(self):
-        data = self.teacher
-        teacher = Teacher.objects.get(id=data.id)
-        field_label = teacher.last_name
-        self.assertHTMLNotEqual(field_label, "sam")
-
-    def test_missing_payload_teacher(self):
-        data = self.teacher
-        teacher = Teacher.objects.get(id=data.id)
-        field_label = teacher.last_name
-        self.assertHTMLNotEqual(field_label, "")
-
-    def test_update_payload_teacher(self):
-        data = self.teacher
-        data.first_name="john"
-        data.save()
-        field_label = data.first_name
-        self.assertEqual(field_label, "john")
-    
-    def test_delete_payload_teacher(self):
-        data = self.teacher
-        id  = data.id
-        data.delete()
-        try:
-            Teacher.objects.get(id=id)
-            self.assertEqual(True, False)
-        except:
-            self.assertEqual(True, True)
-
-    def test_valid_payload_teacher_student(self):
-        teacher = self.teacher
-        student = self.student
-        teacher_student = TeacherStudent.objects.create(
-            student=student, teacher=teacher
+    def test_add_teacher(self):
+        resp = self.client.get(
+            reverse("teacher"),
+            args=[self.first_name, self.last_name]
         )
-        field_label = teacher_student.teacher
-        self.assertEqual(field_label, teacher)
+        self.assertEqual(resp.status_code, 200)
 
-    def test_invalid_payload_teacher_student(self):
+    def test_update_teacher(self):
         teacher = self.teacher
-        student = self.student
-        teacher_student = TeacherStudent.objects.create(
-            student=student, teacher=teacher
-        )
-        field_label = teacher_student.teacher.first_name
-        self.assertHTMLNotEqual(field_label, student.first_name)
-
-    def test_missing_payload_teacher_student(self):
-        teacher = self.teacher
-        student = self.student
-        teacher_student = TeacherStudent.objects.create(
-            student=student, teacher=teacher
-        )
-        field_label = teacher_student.teacher.first_name
-        self.assertHTMLNotEqual(field_label, student.first_name)
-
-    def assign_student_to_teacher_list(self):
-        teacher = self.teacher
-        student = self.student
-        student_teacher = self.student_techer
-        try:
-            value = TeacherStudent.objects.get(
-                techer=teacher, student = student
+        url = reverse(
+            "update_teacher",
+            kwargs={"pk": teacher.id}
             )
-            return self.assertEqual(value.id, student_teacher.id)
-        except:
-            return self.assertEqual(True, False)
-    
-    def unassigned_student_to_teacher_list(self):
-        teacher = self.teacher
-        student = self.student
-        student_teacher = self.student_techer
-        try:
-            value = TeacherStudent.objects.get(
-                techer=teacher, student = student
+
+        payload = {
+            "first_name": "ndk",
+            "last_name": teacher.last_name
+            }
+        resp = self.client.post(url, payload)
+
+        teacher_obj = Teacher.objects.filter(
+            first_name=payload.get("first_name")
             )
-            value.delete()
-            return self.assertEqual(value.id, student_teacher.id)
-        except:
-            return self.assertEqual(True, False)
+        resp_code = resp.status_code
 
-    def mark_as_star_student_to_teacher_list(self):
+        self.assertEqual(resp_code, 302)
+        self.assertNotEqual(teacher_obj, None)
+
+    def test_delete_teacher(self):
+        teacher = self.teacher
+        url = reverse(
+            "delete_teacher",
+            kwargs={"pk": teacher.id}
+            )
+        resp = self.client.post(url)
+        resp_code = resp.status_code
+        self.assertEqual(resp_code, 302)
+        teacher_obj = list(Teacher.objects.filter(
+            id=teacher.id
+            ))
+        self.assertEqual(teacher_obj, list())
+
+    def test_valid_student_list_url(self):
+        resp = self.client.get(reverse("student_list"))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_add_student(self):
+        resp = self.client.get(reverse(
+            "student"),
+            args=[
+                self.first_name,
+                self.last_name
+            ])
+        self.assertEqual(resp.status_code, 200)
+
+    def test_update_student(self):
+        student = self.student
+        url = reverse(
+            "update_student",
+            kwargs={"pk": student.id}
+            )
+
+        payload = {
+            "first_name": "csk",
+            "last_name": student.last_name
+            }
+        resp = self.client.post(url, payload)
+
+        teacher_obj = Student.objects.filter(
+            first_name=payload.get("first_name")
+            )
+        resp_code = resp.status_code
+
+        self.assertEqual(resp_code, 302)
+        self.assertNotEqual(teacher_obj, None)
+
+    def test_delete_student(self):
+        student = self.student
+        url = reverse(
+            "delete_student",
+            kwargs={"pk": student.id}
+            )
+        resp = self.client.post(url)
+        resp_code = resp.status_code
+        self.assertEqual(resp_code, 302)
+        teacher_obj = list(Student.objects.filter(
+            id=student.id
+            ))
+        self.assertEqual(teacher_obj, list())
+
+    def test_valid_assigned_list_url(self):
+        resp = self.client.get(reverse("assigned_list"))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_valid_teacher_assigned_student_url(self):
+        teacher = self.teacher
+        url = reverse(
+            "selected_student",
+            kwargs={"pk": teacher.id}
+            )
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_valid_teacher_unassigned_student_url(self):
+        teacher = self.teacher
+        url = reverse(
+            "unassigned_students",
+            kwargs={"pk": teacher.id}
+            )
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_add_student_to_teacher_list(self):
         teacher = self.teacher
         student = self.student
-        teacher_student = TeacherStudent.objects.create(
-            teacher=teacher, student=student, 
-            is_star=True
-        )
-        field_label = teacher_student.is_staff
-        return self.assertEqual(field_label, True)
+        url = self.add_student_url(teacher.id, student.id)
+        resp = self.client.get(url)
+        teacher_studet_obj = TeacherStudent.objects.filter(
+            teacher=teacher,
+            student=student
+        ).first()
+        self.assertNotEqual(teacher_studet_obj, None)
 
-    def remove_mark_as_star_student_from_teacher_list(self):
+    def test_remove_student_to_teacher_list(self):
         teacher = self.teacher
         student = self.student
-        teacher_student = TeacherStudent.objects.create(
-            teacher=teacher, student=student, 
-            is_star=True
-        )
-        teacher_student.is_staff = False
-        teacher_student.save()
-        field_label = teacher_student.is_staff
-        return self.assertEqual(field_label, False)
+        url = self.add_student_url(teacher.id, student.id)
+        resp = self.client.get(url)
+        url = reverse(
+            "remove_student",
+            kwargs={"teacher": teacher.id,
+                    "student":student.id
+            })
+        resp = self.client.get(url)
+        teacher_studet_obj = TeacherStudent.objects.filter(
+            teacher=teacher,
+            student=student
+        ).first()
+        self.assertEqual(teacher_studet_obj, None)
+
+    def test_mark_as_star_student(self):
+        teacher = self.teacher
+        student = self.student
+        url = self.add_student_url(teacher.id, student.id)
+        resp = self.client.get(url)
+        url = reverse(
+            "mark_as_star",
+            kwargs={"teacher": teacher.id,
+                    "student":student.id
+            })
+        resp = self.client.get(url)
+        teacher_studet_star_obj = TeacherStudent.objects.filter(
+            teacher=teacher,
+            student=student
+        ).first()
+        url = reverse(
+            "mark_as_star",
+            kwargs={"teacher": teacher.id,
+                    "student":student.id
+            })
+        resp = self.client.get(url)
+        teacher_studet_remove_star_obj = TeacherStudent.objects.filter(
+            teacher=teacher,
+            student=student
+        ).first()
+        self.assertEqual(teacher_studet_star_obj.is_star, True)
+        self.assertEqual(teacher_studet_remove_star_obj.is_star, False)

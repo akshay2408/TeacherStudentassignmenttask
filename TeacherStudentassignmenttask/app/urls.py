@@ -17,12 +17,11 @@ urlpatterns = [
     path("student", views.AddStudent.as_view(), name="student"),
     path("student_list", views.StudentList.as_view(), name="student_list"),
     path(
-        "student_teacher/<int:pk>", views.UpdateStudent.as_view(), name="update_student"
+        "update_student/<int:pk>", views.UpdateStudent.as_view(), name="update_student"
     ),
     path(
         "delete_student/<int:pk>", views.DeleteStudent.as_view(), name="delete_student"
     ),
-    # path("assign_teacher/", views.AssignTeacher.as_view(), name="assign_teacher"),
     path(
         "assigned_list",
         views.AssignedTeacherStudentList.as_view(),
@@ -45,7 +44,7 @@ urlpatterns = [
         name="unassigned_students",
     ),
     path(
-        "add-student/<int:teacher>/<int:student>/",
+        "add_student/<int:teacher>/<int:student>/",
         views.add_student,
         name="add_student",
     ),
@@ -55,9 +54,9 @@ urlpatterns = [
         name="remove_student",
     ),
     path(
-        "mark-as-star/<int:teacher>/<int:student>/",
+        "mark_as_star/<int:teacher>/<int:student>/",
         views.mark_as_star,
         name="mark_as_star",
     ),
-    path("graphql", csrf_exempt(GraphQLView.as_view(graphiql=True, schema=schema))),   
-   ]
+    path("graphql", csrf_exempt(GraphQLView.as_view(graphiql=True, schema=schema))),
+]

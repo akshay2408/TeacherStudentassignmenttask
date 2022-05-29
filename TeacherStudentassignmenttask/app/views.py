@@ -146,7 +146,7 @@ def add_student(request, teacher, student):
             f"Student has been added in your student list.",
         )
     except:
-        messages.add_message(request, messages.ERROR,"something went wrong")
+        messages.add_message(request, messages.ERROR, "somthing goes wrong")
     return redirect("unassigned_students", teacher.id)
 
 
@@ -162,9 +162,7 @@ def remove_student(request, teacher, student):
 
 
 def mark_as_star(request, teacher, student):
-    relation_object = TeacherStudent.objects.filter(
-        teacher=teacher, student=student
-    )
+    relation_object = TeacherStudent.objects.filter(teacher=teacher, student=student)
     is_star = False if relation_object[0].is_star else True
     relation_object.update(is_star=is_star)
     messages.add_message(

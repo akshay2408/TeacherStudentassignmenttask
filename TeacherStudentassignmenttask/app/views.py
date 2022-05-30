@@ -117,7 +117,6 @@ class DeleteAssignedTeacherStudent(DeleteView):
     def delete_assigned_list(request, pk):
         student = get_object_or_404(TeacherStudent, id=pk)
 
-
 def assigned_students(request, pk):
     student_obj = TeacherStudent.objects.filter(teacher=pk).select_related(
         "teacher", "student"
@@ -126,7 +125,6 @@ def assigned_students(request, pk):
     context = {"teacher": teacher, "student": student_obj}
     return render(request, "app/select_student.html", context)
 
-
 def unassigned_students(request, pk):
     teacher = Teacher.objects.get(pk=pk)
     ids = teacher.teacher.values_list("student_id", flat=True)
@@ -134,21 +132,14 @@ def unassigned_students(request, pk):
     context = {"teacher": teacher, "students": students}
     return render(request, "app/select_unsigned_student.html", context)
 
-
 def add_student(request, teacher, student):
-    try:
-        student = Student.objects.get(id=student)
-        teacher = Teacher.objects.get(id=teacher)
-        TeacherStudent.objects.get_or_create(teacher=teacher, student=student)
-        messages.add_message(
-            request,
-            messages.SUCCESS,
-            f"Student has been added in your student list.",
-        )
-    except:
-        messages.add_message(request, messages.ERROR, "somthing goes wrong")
-    return redirect("unassigned_students", teacher.id)
-
+    TeacherStudent.objects.get_or_create(teacher_id=teacher, student_id=student)
+    messages.add_message(
+        request,
+        messages.SUCCESS,
+        f"Student has been added in your student list.",
+    )
+    return redirect("unassigned_students", teacher)
 
 def remove_student(request, teacher, student):
     record = TeacherStudent.objects.get(teacher=teacher, student=student)
@@ -159,7 +150,6 @@ def remove_student(request, teacher, student):
         f"Student removed in your student list.",
     )
     return redirect("selected_student", teacher)
-
 
 def mark_as_star(request, teacher, student):
     relation_object = TeacherStudent.objects.filter(teacher=teacher, student=student)
